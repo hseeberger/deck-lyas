@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
 
-    <title>TITLE</title>
+    <title>Learn you Akka Streams for great Good!</title>
 
-    <meta name="description" content="TITLE">
-    <meta name="author" content="AUTHOR">
+    <meta name="description" content="Learn you Akka Streams for great Good!">
+    <meta name="author" content="Heiko Seeberger">
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -48,24 +48,120 @@
 <!-- ########################################################################################### -->
 
 <section data-markdown data-background="images/codecentric-title-background-16x9.png"><script type="text/template">
-## TITLE
+## Learn you (advanced) Akka Streams<br>for great Good!
 
-AUTHOR, codecentric
+Heiko Seeberger, codecentric
 </script></section>
 
 <!-- ########################################################################################### -->
 
 <section data-markdown><script type="text/template">
-### TODO
+### What is Akka Streams?
 
-- TODO
-- TODO
+>Akka Streams is an implementation<br>of **Reactive Streams**.
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### What is Reactive Streams?
+
+> Reactive Streams is an initiative to provide a standard for asynchronous stream processing with non-blocking **back pressure**.
+
+[reactive-streams.org](http://www.reactive-streams.org)
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### Back Pressure
+
+![Reactive Streams](images/reactive-streams.svg "Reactive Streams") <!-- .element class="large" -->
+
+- Upstream may only push data if downstream has signaled **demand**
+- Both data and demand flow asynchronously and non-blocking
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### Again, what is Akka Streams?
+
+- Exhaustive model of bounded stream processing
+  - Linear streams and
+  - almost arbitrary graphs
+- Staged approach
+  - Reusable blueprints
+  - Materialization
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### Linear Streams
+
+![Linear Streams](images/linear-streams.svg "Linear Streams") <!-- .element class="large" -->
+
+- `Source`: a stage with one output
+- `Flow`: a stage with one input and one output
+- `Sink`: a stage with one input
+- Combinators: `via` and `to`
+- `RunnableGraph`: a graph with no unconnected ends – can be `run`
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### Materialized Value
+
+```scala
+source.to(sink)               // RunnableGraph[M1]
+source.toMat(sink)(Keep.both) // RunnableGraph[(M1, M2)]
+```
+
+- Materialized values let you interact with the hot stream
+- Each stage has a materialized value, e.g.:
+  - `Source.maybe[A]`: `Promise[Option[A]]`
+  - `Sink.foreach`: `Future[Done]`
+- `via` and `to` keep the left one, `runWith` the right one
+- `viaMat` and `toMat` let you choose
 </script></section>
 
 <!-- ########################################################################################### -->
 
 <section data-markdown data-background="images/codecentric-green-background-16x9.png"><script type="text/template">
-### TODO
+### Simple Demo / Quiz
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### The Challenge – Server Sent Event Client
+
+>Continuously get and handle streams of Server Sent Events. Set the appropriate Last-Event-ID for getting the next stream. Return a source of materialized values of the handler.
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown><script type="text/template">
+### Server Sent Events
+
+![Server Sent Events](images/server-sent-events.svg "Server Sent Events") <!-- .element class="large" -->
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Server Sent Event Client – Graph
+
+![Server Sent Event Client Graph](images/server-sent-event-client-graph.svg "Server Sent Event Client Graph") <!-- .element class="max" -->
+
+- `LastElement` passes elements along and mats to `Future[Option[A]]`
+- Mat values of `LastElement` and `Handler` are paired up
+</script></section>
+
+<!-- ########################################################################################### -->
+
+<section data-markdown data-background="images/codecentric-green-background-16x9.png"><script type="text/template">
+### Coding it up Step by Step
 </script></section>
 
 <!-- ########################################################################################### -->
@@ -73,10 +169,10 @@ AUTHOR, codecentric
 <section data-markdown><script type="text/template">
 ## Thank you!
 
-&nbsp;
+- Code on GitHub: [hseeberger/lyas](https://github.com/hseeberger/lyas)
+- Follow me on Twitter: [@hseeberger](https://twitter.com/hseeberger)
 
 [![License](https://i.creativecommons.org/l/by/4.0/88x31.png "License")](http://creativecommons.org/licenses/by/4.0)<br>
-
 <span class="license">This work is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0) and powered by [reveal.js](https://github.com/hakimel/reveal.js) under its [LICENSE](https://github.com/hakimel/reveal.js/blob/master/LICENSE).</span>
 </script></section>
 
